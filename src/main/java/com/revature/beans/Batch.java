@@ -5,27 +5,132 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * The type Batch.
+ */
+@Entity
+@Table(name = "CALIBER_BATCH")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Batch implements Serializable {
+
 	private static final long serialVersionUID = -5755409643112884001L;
 
-	private Integer batchId;
-	private String resourceId;
-	private String trainingName;
-	private Trainer trainer;
-	private Trainer coTrainer;
-	private SkillType skillType;
-	private TrainingType trainingType;
-	private Date startDate;
-	private Date endDate;
-	private String location;
-	private Address address;
-	private Short goodGradeThreshold;
-	private Short borderlineGradeThreshold;
-	private Set<Trainee> trainees;
-	private Integer weeks;
-	private Integer gradedWeeks;
-	private Set<Note> notes;
+	@Id
+	@Column(name = "BATCH_ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BATCH_ID_SEQUENCE")
+	@SequenceGenerator(name = "BATCH_ID_SEQUENCE", sequenceName = "BATCH_ID_SEQUENCE")
+	private int batchId;
 
+	@Column(name = "RESOURCE_ID")
+	private String resourceId;
+
+	@NotNull
+	@Column(name = "TRAINING_NAME")
+	private String trainingName;
+
+	@NotNull
+	@JsonProperty
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@JoinColumn(name = "TRAINER_ID", nullable = false)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	private Trainer trainer;
+
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "CO_TRAINER_ID")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	private Trainer coTrainer;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "SKILL_TYPE")
+	private SkillType skillType;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "TRAINING_TYPE")
+	private TrainingType trainingType;
+
+	@JsonFormat(timezone="EST", pattern = "yyyy-MM-dd")
+	@NotNull
+	@Temporal(TemporalType.DATE)
+	@Column(name = "START_DATE", nullable = false)
+	private Date startDate;
+
+	@JsonFormat(timezone="EST", pattern = "yyyy-MM-dd")
+	@NotNull
+	@Temporal(TemporalType.DATE)
+	@Column(name = "END_DATE", nullable = false)
+	private Date endDate;
+
+	@NotEmpty
+	@Column(name = "LOCATION", nullable = false)
+	private String location;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ADDRESS_ID")
+	private Address address;
+
+	/**
+	 * Anything above this grade is GREEN
+	 */
+	@Min(value = 1)
+	@Column(name = "GOOD_GRADE_THRESHOLD")
+	private short goodGradeThreshold;
+
+	/**
+	 * Anything above this grade but below goodGradeThreshold is YELLOW Anything
+	 * below this grade is RED
+	 */
+	@Min(value = 1)
+	@Column(name = "BORDERLINE_GRADE_THRESHOLD")
+	private short borderlineGradeThreshold;
+
+	@OneToMany(mappedBy = "batch", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JsonManagedReference(value = "traineeAndBatch")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	private Set<Trainee> trainees;
+
+	@Column(name = "NUMBER_OF_WEEKS", nullable = false)
+	private int weeks;
+	
+	@Column(name = "GRADED_WEEKS")
+	private int gradedWeeks;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "batch")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	private Set<Note> notes;
+	
 	public Batch() {
 		super();
 		this.weeks = 1;
@@ -57,26 +162,24 @@ public class Batch implements Serializable {
 		this.location = location;
 	}
 
-	public Batch(SimpleBatch simpleBatch) {
+	public Batch(String resourceId, String trainingName, Trainer trainer, Trainer coTrainer, SkillType skillType,
+			TrainingType trainingType, Date startDate, Date endDate) {
 		super();
-		this.batchId = simpleBatch.getBatchId();
-		this.resourceId = simpleBatch.getResourceId();
-		this.trainingName = simpleBatch.getTrainingName();
-		this.skillType = simpleBatch.getSkillType();
-		this.startDate = simpleBatch.getStartDate();
-		this.endDate = simpleBatch.getEndDate();
-		this.location = simpleBatch.getLocation();
-		this.goodGradeThreshold = simpleBatch.getGoodGradeThreshold();
-		this.borderlineGradeThreshold = simpleBatch.getBorderlineGradeThreshold();
-		this.weeks = simpleBatch.getWeeks();
-		this.gradedWeeks = simpleBatch.getGradedWeeks();
+		this.resourceId = resourceId;
+		this.trainingName = trainingName;
+		this.trainer = trainer;
+		this.coTrainer = coTrainer;
+		this.skillType = skillType;
+		this.trainingType = trainingType;
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 
-	public Integer getBatchId() {
+	public int getBatchId() {
 		return batchId;
 	}
 
-	public void setBatchId(Integer batchId) {
+	public void setBatchId(int batchId) {
 		this.batchId = batchId;
 	}
 
@@ -152,19 +255,19 @@ public class Batch implements Serializable {
 		this.location = location;
 	}
 
-	public Short getGoodGradeThreshold() {
+	public short getGoodGradeThreshold() {
 		return goodGradeThreshold;
 	}
 
-	public void setGoodGradeThreshold(Short goodGradeThreshold) {
+	public void setGoodGradeThreshold(short goodGradeThreshold) {
 		this.goodGradeThreshold = goodGradeThreshold;
 	}
 
-	public Short getBorderlineGradeThreshold() {
+	public short getBorderlineGradeThreshold() {
 		return borderlineGradeThreshold;
 	}
 
-	public void setBorderlineGradeThreshold(Short borderlineGradeThreshold) {
+	public void setBorderlineGradeThreshold(short borderlineGradeThreshold) {
 		this.borderlineGradeThreshold = borderlineGradeThreshold;
 	}
 
@@ -176,11 +279,11 @@ public class Batch implements Serializable {
 		this.trainees = trainees;
 	}
 
-	public Integer getWeeks() {
+	public int getWeeks() {
 		return weeks;
 	}
 
-	public void setWeeks(Integer weeks) {
+	public void setWeeks(int weeks) {
 		this.weeks = weeks;
 	}
 
@@ -200,18 +303,18 @@ public class Batch implements Serializable {
 		this.address = address;
 	}
 
-	public Integer getGradedWeeks() {
+	public int getGradedWeeks() {
 		return gradedWeeks;
 	}
 
-	public void setGradedWeeks(Integer gradedWeeks) {
+	public void setGradedWeeks(int gradedWeeks) {
 		this.gradedWeeks = gradedWeeks;
 	}
-
+	
 	@Override
 	public int hashCode() {
-		final Integer prime = 31;
-		Integer result = 1;
+		final int prime = 31;
+		int result = 1;
 		result = prime * result + borderlineGradeThreshold;
 		result = prime * result + ((coTrainer == null) ? 0 : coTrainer.hashCode());
 		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
@@ -287,7 +390,7 @@ public class Batch implements Serializable {
 	@Override
 	public String toString() {
 		return "Batch [batchId=" + batchId + ", trainingName=" + trainingName + ", skillType=" + skillType
-				+ ", trainingType=" + trainingType + ", location==" + location + "]";
+				+ ", trainingType=" + trainingType +", location==" + location + "]";
 	}
 
 }

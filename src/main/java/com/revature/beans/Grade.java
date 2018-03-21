@@ -3,32 +3,85 @@ package com.revature.beans;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+/**
+ * The type Grade.
+ */
+@Entity
+@Table(name = "CALIBER_GRADE")
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Grade implements Serializable {
+
 	private static final long serialVersionUID = -2031135710502844800L;
 
-	private Long gradeId;
+	@Id
+	@Column(name = "GRADE_ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GRADE_ID_SEQUENCE")
+	@SequenceGenerator(name = "GRADE_ID_SEQUENCE", sequenceName = "GRADE_ID_SEQUENCE")
+	private long gradeId;
+
+	/**
+	 * Assessment - The specified assessment taken by the Trainee
+	 */
+	@NotNull
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@JoinColumn(name = "ASSESSMENT_ID", nullable = false)
+	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 	private Assessment assessment;
+
+	/**
+	 * Trainee- the trainee that receives this Grade
+	 */
+	@NotNull
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@JoinColumn(name = "TRAINEE_ID", nullable = false)
+	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 	private Trainee trainee;
+
+	/**
+	 * dateReceived- date this Grade was earned
+	 */
+	@NotNull
+	@Column(name = "DATE_RECEIVED")
 	private Date dateReceived;
-	private Double score;
+
+	/**
+	 * score - points earned. should be based on raw score of Assessment.
+	 * Example: Assessment is worth 200 points, and Trainee made a 75% thus
+	 * score is 150
+	 */
+	@Min(value=0)
+	@Column(name = "SCORE")
+	private double score;
 
 	public Grade() {
 		super();
 	}
 
-	public Grade(Assessment assessment, Trainee trainee, Date dateReceived, Double score) {
-		this();
+	public Grade(Assessment assessment, Trainee trainee, Date dateReceived, double score) {
+		super();
 		this.assessment = assessment;
 		this.trainee = trainee;
 		this.dateReceived = dateReceived;
 		this.score = score;
-	}
-
-	public Grade(SimpleGrade simpleGrade){
-		this();
-		this.gradeId = simpleGrade.getGradeId();
-		this.dateReceived = simpleGrade.getDateReceived();
-		this.score = simpleGrade.getScore();
 	}
 
 	public long getGradeId() {
@@ -63,18 +116,18 @@ public class Grade implements Serializable {
 		this.dateReceived = dateReceived;
 	}
 
-	public Double getScore() {
+	public double getScore() {
 		return score;
 	}
 
-	public void setScore(Double score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
-
+	
 	@Override
 	public int hashCode() {
-		final Integer prime = 31;
-		Integer result = 1;
+		final int prime = 31;
+		int result = 1;
 		result = prime * result + ((assessment == null) ? 0 : assessment.hashCode());
 		result = prime * result + ((dateReceived == null) ? 0 : dateReceived.hashCode());
 		long temp;

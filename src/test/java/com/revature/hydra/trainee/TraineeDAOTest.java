@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.revature.beans.SimpleTrainee;
+import com.revature.beans.Batch;
+import com.revature.beans.Trainee;
 import com.revature.hydra.trainee.data.TraineeRepository;
 
 @RunWith(SpringRunner.class)
@@ -25,14 +26,14 @@ public class TraineeDAOTest {
 	@Autowired
 	TraineeRepository dao;
 
-	SimpleTrainee test;
+	Trainee test;
 
 	@Before
 	public void initialize() {
 		log.info("Initalizing a Test Trainee for use in Tests");
-		test = new SimpleTrainee();
+		test = new Trainee();
 		test.setName("TRAINEE_NAME");
-		test.setBatchId(1);
+		test.setBatch(new Batch());
 		test.setCollege("COLLEGE");
 		test.setDegree("DEGREE");
 		test.setEmail("TRAINEE_EMAIL@EMAIL.COM");
@@ -52,7 +53,7 @@ public class TraineeDAOTest {
 	@Test
 	public void testFindAll() {
 		log.info("Getting All Trainees");
-		List<SimpleTrainee> trainees = dao.findAll();
+		List<Trainee> trainees = dao.findAll();
 
 		assertFalse(trainees.isEmpty());
 	}
@@ -60,30 +61,30 @@ public class TraineeDAOTest {
 //	@Test
 //	public void findByTrainerId() {
 //		log.info("Getting by traineeId");
-//		SimpleTrainee trainee = dao.findOne(555);
+//		Trainee trainee = dao.findOne(555);
 //		assertEquals(555, trainee.getTraineeId());
 //	}
 
 	@Test
 	public void addTrainee() {
 		log.info("Adding Trainee");
-		SimpleTrainee savedTrainee = dao.save(test);
+		Trainee savedTrainee = dao.save(test);
 		assertEquals(test.getTraineeId(), savedTrainee.getTraineeId());
 	}
 
 	@Test
 	public void updateTrainee() {
 		log.info("Updating Trainee");
-		SimpleTrainee savedTrainee = dao.save(test);
+		Trainee savedTrainee = dao.save(test);
 		savedTrainee.setName("UPDATED_NAME");
-		SimpleTrainee updatedTrainee = dao.save(savedTrainee);
+		Trainee updatedTrainee = dao.save(savedTrainee);
 		assertEquals(savedTrainee.getName(), updatedTrainee.getName());
 	}
 
 	@Test
 	public void deleteTrainee() {
 		log.info("Deleting Trainee");
-		SimpleTrainee savedTrainee = dao.save(test);
+		Trainee savedTrainee = dao.save(test);
 		dao.delete(savedTrainee);
 		assertNull(dao.findOne(savedTrainee.getTraineeId()));
 	}

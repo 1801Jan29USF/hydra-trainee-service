@@ -9,6 +9,8 @@ public enum InterviewFormat implements Serializable{
 	@JsonProperty("Skype")
 	SKYPE,
 	@JsonProperty("Phone")
-	PHONE
+	PHONE,
+	@JsonProperty("On-Site")
+	ON_SITE
 	
 }

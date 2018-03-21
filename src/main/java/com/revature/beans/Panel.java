@@ -1,29 +1,117 @@
 package com.revature.beans;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-public class Panel implements Serializable {
-	private static final long serialVersionUID = -3904962254572382770L;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
-	private Integer panelId;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+/**
+ * Results of the final panel interview for each associate.
+ * @author Patrick Walsh
+ *
+ */
+@Entity
+@Table(name = "CALIBER_PANEL")
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class Panel {
+
+	// Interview Details
+	@Id
+	@Column(name = "PANEL_ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PANEL_ID_SEQUENCE")
+	@SequenceGenerator(name = "PANEL_ID_SEQUENCE", sequenceName = "PANEL_ID_SEQUENCE")
+	private int id;
+	
+	@NotNull
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "TRAINEE_ID", nullable = false)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Trainee trainee;
+	
+	@NotNull
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "PANELIST_ID", nullable = false)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Trainer panelist;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="INTERVIEW_DATE")
 	private Date interviewDate;
+	
+	@Column(name="DURATION")
 	private String duration; // 1hr 30 minutes
-	private InterviewFormat format;
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name="INTERVIEW_FORMAT")
+	private InterviewFormat format; 
+	
+	@Column(name="INTERNET_CONNECTIVITY")
 	private String internet; // stable/unstable
-	private Integer panelRound;
-	private Boolean recordingConsent;
+	
+	@NotNull
+	@Min(value = 1)
+	@Column(name="PANEL_ROUND", nullable=false)
+	private int panelRound;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name="RECORDING_CONSENT")
+	private RecordingConsent recordingConsent;
+	
+	@Column(name="RECORDING_LINK")
 	private String recordingLink;
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "PANEL_STATUS", nullable = false)
 	private PanelStatus status;
+	
+	// Technical Feedback
+	@OneToMany(mappedBy = "panel", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JsonManagedReference(value = "feedback")
 	private Set<PanelFeedback> feedback;
+	
+	// Comments and General Feedback
+	@Column(name = "ASSOCIATE_INTRO", nullable = true)
 	private String associateIntro;
+	
+	@Column(name = "PROJECT_ONE_DESCRIPTION", nullable = true)
 	private String projectOneDescription;
+	
+	@Column(name = "PROJECT_TWO_DESCRIPTION", nullable = true)
 	private String projectTwoDescription;
+	
+	@Column(name = "PROJECT_THREE_DESCRIPTION", nullable = true)
 	private String projectThreeDescription;
+	
+	@Column(name = "COMMUNICATION_SKILLS", nullable = true)
 	private String communicationSkills;
+	
+	@Column(name = "OVERALL_FEEDBACK", nullable = true)
 	private String overall;
 
 	public Panel() {
@@ -31,31 +119,12 @@ public class Panel implements Serializable {
 		this.interviewDate = new Date();
 	}
 
-	public Panel(SimplePanel simplePanel){
-		this();
-		this.panelId = simplePanel.getPanelId();
-		this.interviewDate = simplePanel.getInterviewDate();
-		this.duration = simplePanel.getDuration();
-		this.format = simplePanel.getFormatId();
-		this.internet = simplePanel.getInternet();
-		this.panelRound = simplePanel.getPanelRound();
-		this.recordingConsent = simplePanel.isRecordingConsent();
-		this.recordingLink = simplePanel.getRecordingLink();
-		this.status = simplePanel.getStatusId();
-		this.associateIntro = simplePanel.getAssociateIntro();
-		this.projectOneDescription = simplePanel.getProjectOneDescription();
-		this.projectTwoDescription = simplePanel.getProjectTwoDescription();
-		this.projectThreeDescription = simplePanel.getProjectThreeDescription();
-		this.communicationSkills = simplePanel.getCommunicationSkills();
-		this.overall = simplePanel.getOverall();
+	public int getId() {
+		return id;
 	}
 
-	public Integer getId() {
-		return panelId;
-	}
-
-	public void setId(Integer id) {
-		this.panelId = id;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public Trainee getTrainee() {
@@ -106,19 +175,19 @@ public class Panel implements Serializable {
 		this.internet = internet;
 	}
 
-	public Integer getPanelRound() {
+	public int getPanelRound() {
 		return panelRound;
 	}
 
-	public void setPanelRound(Integer panelRound) {
+	public void setPanelRound(int panelRound) {
 		this.panelRound = panelRound;
 	}
 
-	public Boolean isRecordingConsent() {
+	public RecordingConsent isRecordingConsent() {
 		return recordingConsent;
 	}
 
-	public void setRecordingConsent(Boolean recordingConsent) {
+	public void setRecordingConsent(RecordingConsent recordingConsent) {
 		this.recordingConsent = recordingConsent;
 	}
 
@@ -196,8 +265,8 @@ public class Panel implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final Integer prime = 31;
-		Integer result = 1;
+		final int prime = 31;
+		int result = 1;
 		result = prime * result + ((associateIntro == null) ? 0 : associateIntro.hashCode());
 		result = prime * result + ((communicationSkills == null) ? 0 : communicationSkills.hashCode());
 		result = prime * result + ((duration == null) ? 0 : duration.hashCode());
@@ -210,7 +279,7 @@ public class Panel implements Serializable {
 		result = prime * result + ((projectOneDescription == null) ? 0 : projectOneDescription.hashCode());
 		result = prime * result + ((projectThreeDescription == null) ? 0 : projectThreeDescription.hashCode());
 		result = prime * result + ((projectTwoDescription == null) ? 0 : projectTwoDescription.hashCode());
-		result = prime * result + (recordingConsent ? 1231 : 1237);
+		result = prime * result + ((recordingConsent == null) ? 0 : recordingConsent.hashCode());
 		result = prime * result + ((recordingLink == null) ? 0 : recordingLink.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((trainee == null) ? 0 : trainee.hashCode());
@@ -299,7 +368,7 @@ public class Panel implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Panel [id=" + panelId + ", trainee=" + trainee + ", panelist=" + panelist + ", interviewDate="
+		return "Panel [id=" + id + ", trainee=" + trainee + ", panelist=" + panelist + ", interviewDate="
 				+ interviewDate + ", duration=" + duration + ", format=" + format + ", internet=" + internet
 				+ ", panelRound=" + panelRound + ", recordingConsent=" + recordingConsent + ", recordingLink="
 				+ recordingLink + ", status=" + status + ", feedback=" + feedback + ", associateIntro=" + associateIntro

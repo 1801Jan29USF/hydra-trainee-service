@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.beans.Batch;
-import com.revature.beans.SimpleBatch;
-import com.revature.beans.SimpleTrainee;
 import com.revature.beans.Trainee;
 import com.revature.beans.TrainingStatus;
 import com.revature.hydra.trainee.data.TraineeRepository;
@@ -33,8 +31,7 @@ public class TraineeCompositionService {
 	 * 
 	 */
 	public void save(Trainee trainee) {
-		SimpleTrainee simpleTrainee = new SimpleTrainee(trainee);
-		traineeRepository.save(simpleTrainee);
+		traineeRepository.save(trainee);
 	}
 	
 	/**
@@ -65,42 +62,42 @@ public class TraineeCompositionService {
 	
 	/**
 	 * 
-	 * Obtain list of SimpleTrainees from traineeRepository.
+	 * Obtain list of Trainees from traineeRepository.
 	 * Then obtain a list of Complex Trainee beans from composition.
 	 * 
 	 * 
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findAll() {
-		List<SimpleTrainee> basis = traineeRepository.findAll();
+		List<Trainee> basis = traineeRepository.findAll();
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
 	}
 	
 	/**
-	 * Obtain list of SimpleTrainees from traineeRepository that have training status not dropped.
+	 * Obtain list of Trainees from traineeRepository that have training status not dropped.
 	 * Then obtain a list of Complex Trainee beans from composition.
 	 * 
 	 * 
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findAllNotDropped() {
-		List<SimpleTrainee> basis = traineeRepository.findAllByTrainingStatusNot(TrainingStatus.DROPPED);
+		List<Trainee> basis = traineeRepository.findAllByTrainingStatusNot(TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
 	}
 	
 	/**
-	 * Obtain list of SimpleTrainees from traineeRepository that have training status not dropped and part of a particular batch.
+	 * Obtain list of Trainees from traineeRepository that have training status not dropped and part of a particular batch.
 	 * Then obtain a list of Complex Trainee beans from composition.
 	 * 
 	 * @param Integer - batchId
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findAllByBatch(Integer batchId) {
-		List<SimpleTrainee> basis = traineeRepository.findAllByBatchIdAndTrainingStatusNot(batchId,
+		List<Trainee> basis = traineeRepository.findAllByBatchIdAndTrainingStatusNot(batchId,
 				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
@@ -108,14 +105,14 @@ public class TraineeCompositionService {
 	}
 	
 	/**
-	 * Obtain list of SimpleTrainees from traineeRepository that have training status dropped and part of a particular batch.
+	 * Obtain list of Trainees from traineeRepository that have training status dropped and part of a particular batch.
 	 * Then obtain a list of Complex Trainee beans from composition.
 	 * 
 	 * @param Integer - batchId
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findAllDroppedByBatch(Integer batchId) {
-		List<SimpleTrainee> basis = traineeRepository.findAllByBatchIdAndTrainingStatus(batchId,
+		List<Trainee> basis = traineeRepository.findAllByBatchIdAndTrainingStatus(batchId,
 				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
@@ -123,21 +120,21 @@ public class TraineeCompositionService {
 	}
 	
 	/**
-	 * Obtain list of SimpleTrainees from traineeRepository that have training status not dropped and part of a particular batch.
+	 * Obtain list of Trainees from traineeRepository that have training status not dropped and part of a particular batch.
 	 * Then obtain a list of Complex Trainee beans from composition.
 	 * 
 	 * @param Integer - trainerId
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findAllByTrainer(Integer trainerId) {
-		List<SimpleBatch> trainerBatches = traineeCompositionMessagingService.sendListSimpleBatchRequest(trainerId);
-		List<SimpleTrainee> basis = new LinkedList<SimpleTrainee>();// traineeRepository.findAllByBatchIdAndTrainingStatusNot(trainerId,
+		List<Batch> trainerBatches = traineeCompositionMessagingService.sendListBatchRequest(trainerId);
+		List<Trainee> basis = new LinkedList<Trainee>();// traineeRepository.findAllByBatchIdAndTrainingStatusNot(trainerId,
 														// TrainingStatus.Dropped);
 		System.out.println(basis);
 		List<Trainee> trainees = null;
 
-		for (SimpleBatch b : trainerBatches) {
-			List<SimpleTrainee> batchTrainees = traineeRepository.findAllByBatchIdAndTrainingStatusNot(b.getBatchId(),
+		for (Batch b : trainerBatches) {
+			List<Trainee> batchTrainees = traineeRepository.findAllByBatchIdAndTrainingStatusNot(b.getBatchId(),
 					TrainingStatus.DROPPED);
 			basis.addAll(batchTrainees);
 		}
@@ -148,43 +145,42 @@ public class TraineeCompositionService {
 	}
 	/**
 	 * sphuang 02/08/2018 
-	 * Obtain a SimpleTrainee from traineeRepository that have it's training status not dropped and matches the traineeId.
+	 * Obtain a Trainee from traineeRepository that have it's training status not dropped and matches the traineeId.
 	 * Then obtain a Complex Trainee from composition.
 	 * 
 	 * @param Integer - traineeId
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public Trainee findOne(Integer traineeId) {
-		SimpleTrainee basis = traineeRepository.findOneByTraineeIdAndTrainingStatusNot(traineeId,
+		Trainee result = traineeRepository.findOneByTraineeIdAndTrainingStatusNot(traineeId,
 				TrainingStatus.DROPPED);
-		Trainee result = composeTrainee(basis);
 
 		return result;
 	}
 	
 	/**
-	 * Obtain a List of SimpleTrainees from traineeRepository that have it's training status not dropped and matches the email.
+	 * Obtain a List of Trainees from traineeRepository that have it's training status not dropped and matches the email.
 	 * Then obtain a List of Complex Trainee from composition.
 	 * 
 	 * @param String - email
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findByEmail(String email) {
-		List<SimpleTrainee> basis = traineeRepository.findAllByEmailLikeAndTrainingStatusNot(email,
+		List<Trainee> basis = traineeRepository.findAllByEmailLikeAndTrainingStatusNot(email,
 				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
 	}
 	/**
-	 * Obtain a List of SimpleTrainees from traineeRepository that have it's training status not dropped and matches the name.
+	 * Obtain a List of Trainees from traineeRepository that have it's training status not dropped and matches the name.
 	 * Then obtain a List of Complex Trainees from composition.
 	 * 
 	 * @param String - name
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findByName(String name) {
-		List<SimpleTrainee> basis = traineeRepository.findAllByNameLikeAndTrainingStatusNot(name,
+		List<Trainee> basis = traineeRepository.findAllByNameLikeAndTrainingStatusNot(name,
 				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
@@ -192,14 +188,14 @@ public class TraineeCompositionService {
 	}
 	
 	/**
-	 * Obtain a List of SimpleTrainees from traineeRepository that have it's training status not dropped and matches the skypeId.
+	 * Obtain a List of Trainees from traineeRepository that have it's training status not dropped and matches the skypeId.
 	 * Then obtain a List of Complex Trainees from composition.
 	 * 
 	 * @param String - skypeId
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findBySkypeId(String skypeId) {
-		List<SimpleTrainee> basis = traineeRepository.findAllBySkypeIdLikeAndTrainingStatusNot(skypeId,
+		List<Trainee> basis = traineeRepository.findAllBySkypeIdLikeAndTrainingStatusNot(skypeId,
 				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
@@ -210,35 +206,35 @@ public class TraineeCompositionService {
 	 * Composing a list of Complex Trainees.
 	 * 
 	 * 
-	 * @param List<SimpleTrainee> - List of SimpleTrainees
+	 * @param List<Trainee> - List of Trainees
 	 * @return List<Trainee> - List of complex Trainees
 	 */
-	private List<Trainee> composeListOfTrainees(List<SimpleTrainee> simpleTrainees) {
+	private List<Trainee> composeListOfTrainees(List<Trainee> Trainees) {
 		List<Trainee> trainees = new LinkedList<Trainee>();
 
-		for (SimpleTrainee simpleTrainee : simpleTrainees) {
-			Trainee trainee = composeTrainee(simpleTrainee);
+		for (Trainee trainee : Trainees) {
+//			Trainee trainee = composeTrainee(Trainee);
 			trainees.add(trainee);
 		}
 
 		return trainees;
 	}
-	
-	/**
-	 * Composing a complex Trainee from a simpleTrainee. Obtains a batch to build the complex Trainee.
-	 * 
-	 * 
-	 * @param SimpleTrainee - simpleTrainee
-	 * @return trainee - complex Trainee
-	 */
-	private Trainee composeTrainee(SimpleTrainee simpleTrainee) {
-		Trainee trainee = new Trainee(simpleTrainee);
-
-		SimpleBatch simpleBatch = traineeCompositionMessagingService
-				.sendSingleSimpleBatchRequest(simpleTrainee.getBatchId());
-		Batch batch = new Batch(simpleBatch);
-		trainee.setBatch(batch);
-
-		return trainee;
-	}
+//	
+//	/**
+//	 * Composing a complex Trainee from a Trainee. Obtains a batch to build the complex Trainee.
+//	 * 
+//	 * 
+//	 * @param Trainee - Trainee
+//	 * @return trainee - complex Trainee
+//	 */
+//	private Trainee composeTrainee(Trainee Trainee) {
+//		Trainee trainee = new Trainee(Trainee);
+//
+//		Batch Batch = traineeCompositionMessagingService
+//				.sendSingleBatchRequest(Trainee.getBatchId());
+//		Batch batch = new Batch(Batch);
+//		trainee.setBatch(batch);
+//
+//		return trainee;
+//	}
 }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonObject;
-import com.revature.beans.SimpleBatch;
+import com.revature.beans.Batch;
 /**
  * TraineeCompositionMessagingService
  * Sends messages to Batch's queue to obtain a Batch or list of Batches to build the complex TraineeBean and list of Trainee respectively.
@@ -35,36 +35,36 @@ public class TraineeCompositionMessagingService {
 	/**
 	 * sphuang 02/07/2018 
 	 * Sending a message string in json notation to Batch's queue containing method name findOne and a specific batch ID.
-	 * In return, BatchRepositoryMessagingService will return back a SimpleBatch object that is in that particular batch.
+	 * In return, BatchRepositoryMessagingService will return back a Batch object that is in that particular batch.
 	 * 
 	 * @param Integer - Trainee's Batch Id
-	 * @return A SimpleBatch object
+	 * @return A Batch object
 	*/
-	public SimpleBatch sendSingleSimpleBatchRequest(Integer batchId) {
+	public Batch sendSingleBatchRequest(Integer batchId) {
 		JsonObject batchRequest = new JsonObject();
 
 		batchRequest.addProperty("methodName", "findOne");
 		batchRequest.addProperty("batchId", batchId);
 
-		return (SimpleBatch) rabbitTemplate.convertSendAndReceive(RABBIT_REPO_EXCHANGE, SINGLE_BATCH_ROUTING_KEY,
+		return (Batch) rabbitTemplate.convertSendAndReceive(RABBIT_REPO_EXCHANGE, SINGLE_BATCH_ROUTING_KEY,
 				batchRequest.toString());
 	}
 
 	/**
 	 * sphuang 02/07/2018 
 	 * Sending a message string in json notation to Batch's queue containing method name findAllByTrainerId and a specific trainer ID.
-	 * In return, BatchRepositoryMessagingService will return back a list of SimpleBatch objects that have the same Trainer ID.
+	 * In return, BatchRepositoryMessagingService will return back a list of Batch objects that have the same Trainer ID.
 	 * 
 	 * @param Integer - Trainee's Trainer Id
-	 * @return A List of SimpleBatch object
+	 * @return A List of Batch object
 	*/
 	@SuppressWarnings("unchecked")
-	public List<SimpleBatch> sendListSimpleBatchRequest(Integer trainerId) {
+	public List<Batch> sendListBatchRequest(Integer trainerId) {
 		JsonObject batchRequest = new JsonObject();
 		batchRequest.addProperty("methodName", "findAllByTrainerId");
 		batchRequest.addProperty("trainerId", trainerId);
 
-		return (List<SimpleBatch>) rabbitTemplate.convertSendAndReceive(RABBIT_REPO_EXCHANGE, LIST_BATCH_ROUTING_KEY,
+		return (List<Batch>) rabbitTemplate.convertSendAndReceive(RABBIT_REPO_EXCHANGE, LIST_BATCH_ROUTING_KEY,
 				batchRequest.toString());
 	}
 

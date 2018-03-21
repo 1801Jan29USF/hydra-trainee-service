@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.revature.beans.SimpleTrainee;
 import com.revature.beans.Trainee;
 import com.revature.hydra.trainee.data.TraineeRepository;
 /**
  * TraineeRepositoryRequestDispatcher
  * Changes JsonObject requests into strings. Depending on the message, different TraineeRepository methods are called to return
- * back a SimpleTrainee, List of SimpleTrainee, or List of ComplexTrainee.
+ * back a Trainee, List of Trainee, or List of ComplexTrainee.
  *
  * 
  * 
@@ -23,21 +22,19 @@ public class TraineeRepositoryRequestDispatcher {
 	@Autowired
 	private TraineeRepository traineeRepository;
 	
-	@Autowired
-	private TraineeCompositionService traineeCompositionService;
 	
 	/**
 	 * 
 	 * Process Single Simple Trainee Request
 	 * Depending on methodName, can return either a trainee that matches a traineeId,
-	 * or delete a trainee, or persists a SimpleTrainee to database.
+	 * or delete a trainee, or persists a Trainee to database.
 	 * 
 	 * 
 	 * @param JsonObject - request
-	 * @return SimpleTrainee
+	 * @return Trainee
 	 */
-	public SimpleTrainee processSingleSimpleTraineeRequest(JsonObject request) {
-		SimpleTrainee result = null;
+	public Trainee processSingleTraineeRequest(JsonObject request) {
+		Trainee result = null;
 		String methodName = request.get("methodName").getAsString();
 		Gson gson = new Gson();
 		
@@ -47,7 +44,7 @@ public class TraineeRepositoryRequestDispatcher {
 		} else if(methodName.equals("delete")) {
 			traineeRepository.delete(request.get("traineeId").getAsInt());
 		} else if(methodName.equals("save")) {
-			SimpleTrainee trainee = gson.fromJson(request.get("trainee").getAsString(), SimpleTrainee.class);
+			Trainee trainee = gson.fromJson(request.get("trainee").getAsString(), Trainee.class);
 			result = traineeRepository.save(trainee);
 		} else if(methodName.equals("findOneByResourceId")) {
 			result = traineeRepository.findOneByResourceId(request.get("resourceId").getAsString());
@@ -64,11 +61,11 @@ public class TraineeRepositoryRequestDispatcher {
 	 * 
 	 * 
 	 * @param JsonObject - request
-	 * @return List of SimpleTrainee 
+	 * @return List of Trainee 
 	 */
-	public List<SimpleTrainee> processListSimpleTraineeRequest(JsonObject request) {
+	public List<Trainee> processListTraineeRequest(JsonObject request) {
 		System.out.println("Hey hello");
-		List<SimpleTrainee> result = null;
+		List<Trainee> result = null;
 		String methodName = request.get("methodName").getAsString();
 		
 		if(methodName.equals("findAll")) {
@@ -80,7 +77,7 @@ public class TraineeRepositoryRequestDispatcher {
 		} else if(methodName.equals("delete")) {
 			System.out.println("delete");
 			result = traineeRepository.findAllByBatchId(request.get("batchId").getAsInt());
-			for(SimpleTrainee t : result) {
+			for(Trainee t : result) {
 				System.out.println(t);
 				traineeRepository.delete(t.getTraineeId());
 			}
@@ -101,14 +98,14 @@ public class TraineeRepositoryRequestDispatcher {
 	 * @param JsonObject - request
 	 * @return List of Trainees 
 	 */
-	public List<Trainee> processListTraineeRequest(JsonObject request) {
-		List<Trainee> result = null;
-		String methodName = request.get("methodName").getAsString();
-		
-		if(methodName.equals("findAllByBatch")) {
-			result = traineeCompositionService.findAllByBatch(request.get("batchId").getAsInt());
-		}
-		
-		return result;
-	}
+//	public List<Trainee> processListTraineeRequest(JsonObject request) {
+//		List<Trainee> result = null;
+//		String methodName = request.get("methodName").getAsString();
+//		
+//		if(methodName.equals("findAllByBatch")) {
+//			result = traineeCompositionService.findAllByBatch(request.get("batchId").getAsInt());
+//		}
+//		
+//		return result;
+//	}
 }

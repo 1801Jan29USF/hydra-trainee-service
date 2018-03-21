@@ -4,16 +4,90 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Assessment implements Serializable {
-	private static final long serialVersionUID = 5030264218154828822L;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
-	private Long assessmentId;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+/**
+ * The type Assessment.
+ */
+@Entity
+@Table(name = "CALIBER_ASSESSMENT")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Assessment implements Serializable {
+
+	private static final long serialVersionUID = 5030264218154828822L;
+	
+	@Id
+	@Column(name = "ASSESSMENT_ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ASSESSMENT_ID_SEQUENCE")
+	@SequenceGenerator(name = "ASSESSMENT_ID_SEQUENCE", sequenceName = "ASSESSMENT_ID_SEQUENCE")
+	private long assessmentId;
+
+	/**
+	 * Trainer inputted title, can be anything to help identify this assessment
+	 */
+	@Column(name = "ASSESSMENT_TITLE")
 	private String title;
+
+	/**
+	 * Batch ID reference
+	 */
+	@NotNull
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "BATCH_ID", nullable = false)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Batch batch;
-	private Integer rawScore;
+
+	/**
+	 * Raw numerical score before calculations This value is the maximum number
+	 * of points that can be earned on this assignment.
+	 */
+	@Min(value = 1)
+	@Column(name = "RAW_SCORE", nullable = false)
+	private int rawScore;
+
+	/**
+	 * Assessment type, e.g. LMS, Verbal
+	 */
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "ASSESSMENT_TYPE", nullable = false)
 	private AssessmentType type;
-	private Short week;
+
+	@Min(value = 1)
+	@Column(name = "WEEK_NUMBER", nullable = false)
+	private short week;
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "ASSESSMENT_CATEGORY", nullable = false)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Category category;
+
+	@OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL)
+	@JsonIgnore
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Grade> grades = new HashSet<>();
 
 	public Assessment() {
@@ -22,7 +96,7 @@ public class Assessment implements Serializable {
 
 	public Assessment(String title, Batch batch, Integer rawScore, AssessmentType type, Integer week,
 			Category category) {
-		this();
+		super();
 		this.title = title;
 		this.batch = batch;
 		this.rawScore = rawScore;
@@ -31,20 +105,11 @@ public class Assessment implements Serializable {
 		this.category = category;
 	}
 
-	public Assessment(SimpleAssessment simpleAssessment){
-		this();
-		this.assessmentId = simpleAssessment.getAssessmentId();
-		this.title = simpleAssessment.getTitle();
-		this.rawScore = simpleAssessment.getRawScore();
-		this.type = simpleAssessment.getType();
-		this.week = simpleAssessment.getWeek();
-	}
-
-	public Long getAssessmentId() {
+	public long getAssessmentId() {
 		return assessmentId;
 	}
 
-	public void setAssessmentId(Long assessmentId) {
+	public void setAssessmentId(long assessmentId) {
 		this.assessmentId = assessmentId;
 	}
 
@@ -64,11 +129,11 @@ public class Assessment implements Serializable {
 		this.batch = batch;
 	}
 
-	public Integer getRawScore() {
+	public int getRawScore() {
 		return rawScore;
 	}
 
-	public void setRawScore(Integer rawScore) {
+	public void setRawScore(int rawScore) {
 		this.rawScore = rawScore;
 	}
 
@@ -80,11 +145,11 @@ public class Assessment implements Serializable {
 		this.type = type;
 	}
 
-	public Short getWeek() {
+	public short getWeek() {
 		return week;
 	}
 
-	public void setWeek(Short week) {
+	public void setWeek(short week) {
 		this.week = week;
 	}
 
@@ -106,8 +171,8 @@ public class Assessment implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final Integer prime = 31;
-		Integer result = 1;
+		final int prime = 31;
+		int result = 1;
 		result = prime * result + ((batch == null) ? 0 : batch.hashCode());
 		result = prime * result + ((category == null) ? 0 : category.hashCode());
 		result = prime * result + rawScore;
@@ -152,7 +217,7 @@ public class Assessment implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Assessment [assessmentId= " + assessmentId + " title=" + title + ", batch=" + batch + ", rawScore="
-				+ rawScore + ", type=" + type + ", week=" + week + ", category=" + category + "]";
+		return "Assessment [assessmentId= "+assessmentId+" title=" + title + ", batch=" + batch + ", rawScore=" + rawScore + ", type=" + type + ", week=" + week + ", category="
+				+ category + "]";
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.revature.beans.SimpleTrainee;
+import com.revature.beans.Trainee;
 import com.revature.beans.TrainingStatus;
 /**
  * TraineeRepository
@@ -14,81 +14,81 @@ import com.revature.beans.TrainingStatus;
  * @author Samuel Huang
  */
 @Repository
-public interface TraineeRepository extends JpaRepository<SimpleTrainee, Integer> {
+public interface TraineeRepository extends JpaRepository<Trainee, Integer> {
 
-	SimpleTrainee findOneByResourceId(String resourceId);
+	Trainee findOneByResourceId(String resourceId);
 	
 	/**
 	 * Find a Trainee by traineeId and without this status
 	 *
 	 * @param traineeId, status
 	 *
-	 * @return SimpleTrainee
+	 * @return Trainee
 	 */
   
-	SimpleTrainee findOneByTraineeIdAndTrainingStatusNot(Integer traineeId, TrainingStatus status);
+	Trainee findOneByTraineeIdAndTrainingStatusNot(Integer traineeId, TrainingStatus status);
 	
 	/**
-	 * find a list of SimpleTrainee by email and without this status
+	 * find a list of Trainee by email and without this status
 	 *
 	 * @param email, status
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
-	List<SimpleTrainee> findAllByEmailLikeAndTrainingStatusNot(String email, TrainingStatus status);
+	List<Trainee> findAllByEmailLikeAndTrainingStatusNot(String email, TrainingStatus status);
 
 	/**
-	 * find a list of SimpleTrainee by name and without this status
+	 * find a list of Trainee by name and without this status
 	 *
 	 * @param name, status
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
-	List<SimpleTrainee> findAllByNameLikeAndTrainingStatusNot(String name, TrainingStatus status);
+	List<Trainee> findAllByNameLikeAndTrainingStatusNot(String name, TrainingStatus status);
 
 	/**
-	 * find a list of SimpleTrainee by skypeId and without this status
+	 * find a list of Trainee by skypeId and without this status
 	 *
 	 * @param skypeId, status
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
-	List<SimpleTrainee> findAllBySkypeIdLikeAndTrainingStatusNot(String skypeId, TrainingStatus status);
+	List<Trainee> findAllBySkypeIdLikeAndTrainingStatusNot(String skypeId, TrainingStatus status);
 
 	/**
-	 * find a list of SimpleTrainee by batchId and without this status
+	 * find a list of Trainee by batchId and without this status
 	 *
 	 * @param batchId, status
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
-	List<SimpleTrainee> findAllByBatchIdAndTrainingStatusNot(Integer batchId, TrainingStatus status);
+	List<Trainee> findAllByBatchIdAndTrainingStatusNot(Integer batchId, TrainingStatus status);
 	
 	/**
-	 * find a list of SimpleTrainee by batchId and status
+	 * find a list of Trainee by batchId and status
 	 *
 	 * @param batchId, status
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
-	List<SimpleTrainee> findAllByBatchIdAndTrainingStatus(Integer batchId, TrainingStatus status);
+	List<Trainee> findAllByBatchIdAndTrainingStatus(Integer batchId, TrainingStatus status);
 	
 	/**
-	 * find a list of SimpleTrainee without this status
+	 * find a list of Trainee without this status
 	 *
 	 * @param status
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
-	List<SimpleTrainee> findAllByTrainingStatusNot(TrainingStatus status);
+	List<Trainee> findAllByTrainingStatusNot(TrainingStatus status);
 	
 	/**
-	 * find a list of SimpleTrainee with this batchId
+	 * find a list of Trainee with this batchId
 	 *
 	 * @param batchId
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
-	List<SimpleTrainee> findAllByBatchId(Integer batchId);
+	List<Trainee> findAllByBatchId(Integer batchId);
 	
 }

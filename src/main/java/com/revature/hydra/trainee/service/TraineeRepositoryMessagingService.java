@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.revature.beans.SimpleTrainee;
 import com.revature.beans.Trainee;
 /**
  * Message Listener
@@ -25,56 +24,56 @@ public class TraineeRepositoryMessagingService {
 	/**
 	 * 
 	 * Parses message in queue to a string json object.
-	 * RequestDispatcher then processes the message and returns a SimpleTrainee.
+	 * RequestDispatcher then processes the message and returns a Trainee.
 	 * 
 	 * 
 	 * @param String - message
-	 * @return SimpleTrainee 
+	 * @return Trainee 
 	 */
 	@RabbitListener(queues = "revature.hydra.repos.trainee")
-	public SimpleTrainee receiveSingleSimpleTraineeRequest(String message) {
+	public Trainee receiveSingleTraineeRequest(String message) {
 		JsonParser parser = new JsonParser();
 		JsonElement element = parser.parse(message);
 		JsonObject request = element.getAsJsonObject();
 
-		return traineeRepositoryRequestDispatcher.processSingleSimpleTraineeRequest(request);
+		return traineeRepositoryRequestDispatcher.processSingleTraineeRequest(request);
 	}
 
 	/**
 	 * Parses message in queue to a string json object.
-	 * RequestDispatcher then processes the message and returns a List of SimpleTrainee.
+	 * RequestDispatcher then processes the message and returns a List of Trainee.
 	 * 
 	 * 
 	 * @param String - message
-	 * @return List<SimpleTrainee> - List of simple Trainee
-	 * Parse a String for List of SimpleTrainee
+	 * @return List<Trainee> - List of simple Trainee
+	 * Parse a String for List of Trainee
 	 *
 	 * @param Message
 	 *
-	 * @return List of SimpleTrainee
+	 * @return List of Trainee
 	 */
 	@RabbitListener(queues = "revature.hydra.repos.trainee.list")
-	public List<SimpleTrainee> receiveListSimpleTraineeRequest(String message) {
-		JsonParser parser = new JsonParser();
-		JsonElement element = parser.parse(message);
-		JsonObject request = element.getAsJsonObject();
-
-		return traineeRepositoryRequestDispatcher.processListSimpleTraineeRequest(request);
-	}
-	
-	/**
-	 * Parses message in queue to a string json object.
-	 * RequestDispatcher then processes the message and returns a List of ComplexTrainees.
-	 * 
-	 * 
-	 * @param String - message
-	 * @return List<Trainee> - List of Complex Trainees
-	 */
-	@RabbitListener(queues = "revature.hydra.service.trainee.list")
 	public List<Trainee> receiveListTraineeRequest(String message) {
 		JsonParser parser = new JsonParser();
 		JsonElement element = parser.parse(message);
 		JsonObject request = element.getAsJsonObject();
+
 		return traineeRepositoryRequestDispatcher.processListTraineeRequest(request);
 	}
+	
+	/**
+//	 * Parses message in queue to a string json object.
+//	 * RequestDispatcher then processes the message and returns a List of ComplexTrainees.
+//	 * 
+//	 * 
+//	 * @param String - message
+//	 * @return List<Trainee> - List of Complex Trainees
+//	 */
+//	@RabbitListener(queues = "revature.hydra.service.trainee.list")
+//	public List<Trainee> receiveListTraineeRequest(String message) {
+//		JsonParser parser = new JsonParser();
+//		JsonElement element = parser.parse(message);
+//		JsonObject request = element.getAsJsonObject();
+//		return traineeRepositoryRequestDispatcher.processListTraineeRequest(request);
+//	}
 }

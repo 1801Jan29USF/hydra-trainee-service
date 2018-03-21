@@ -1,35 +1,81 @@
 package com.revature.beans;
 
-import java.io.Serializable;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
-public class PanelFeedback  implements Serializable {
-	private static final long serialVersionUID = -7997716749941674836L;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+/**
+ * Notes and results for each category that the panelist
+ * goes over with the associate.
+ * 
+ * @author Patrick Walsh
+ *
+ */
+@Entity
+@Table(name = "CALIBER_PANEL_FEEDBACK")
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class PanelFeedback {
+
+	@Id
+	@Column(name = "PANEL_FEEDBACK_ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PANEL_FEEDBACK_ID_SEQUENCE")
+	@SequenceGenerator(name = "PANEL_FEEDBACK_ID_SEQUENCE", sequenceName = "PANEL_FEEDBACK_ID_SEQUENCE")
+	private long id;
 	
-	private Long panelFeedbackId;
+	@NotNull
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	@JoinColumn(name="CATEGORY_ID", nullable=false)
 	private Category technology;
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "PANEL_STATUS", nullable = false)
 	private PanelStatus status;
-	private Integer result;
+	
+	@Min(0)
+	@Max(10)
+	@NotNull
+	@Column(name = "PANEL_RESULT")
+	private int result;
+	
+	@Column(name = "PANELIST_COMMENTS")
 	private String comment;
+	
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name="PANEL_ID", nullable=false)
+	@JsonBackReference(value = "feedback")
 	private Panel panel;
 
 	public PanelFeedback() {
 		super();
 	}
-	
-	public PanelFeedback(SimplePanelFeedback simplePanelFeedback){
-		this();
-		this.panelFeedbackId = simplePanelFeedback.getId();
-		this.status = simplePanelFeedback.getStatus();
-		this.result = simplePanelFeedback.getResult();
-		this.comment = simplePanelFeedback.getComment();
+
+	public long getId() {
+		return id;
 	}
 
-	public Long getId() {
-		return panelFeedbackId;
-	}
-
-	public void setId(Long id) {
-		this.panelFeedbackId = id;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public Category getTechnology() {
@@ -48,11 +94,11 @@ public class PanelFeedback  implements Serializable {
 		this.status = status;
 	}
 
-	public Integer getResult() {
+	public int getResult() {
 		return result;
 	}
 
-	public void setResult(Integer result) {
+	public void setResult(int result) {
 		this.result = result;
 	}
 
@@ -74,8 +120,8 @@ public class PanelFeedback  implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final Integer prime = 31;
-		Integer hashCodeResult = 1;
+		final int prime = 31;
+		int hashCodeResult = 1;
 		hashCodeResult = prime * hashCodeResult + ((comment == null) ? 0 : comment.hashCode());
 		hashCodeResult = prime * hashCodeResult + ((panel == null) ? 0 : panel.hashCode());
 		hashCodeResult = prime * hashCodeResult + this.result;
@@ -101,7 +147,7 @@ public class PanelFeedback  implements Serializable {
 		if (panel == null) {
 			if (other.panel != null)
 				return false;
-		}
+		} 
 		if (result != other.result)
 			return false;
 		if (status != other.status)
@@ -116,8 +162,8 @@ public class PanelFeedback  implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PanelFeedback [id=" + panelFeedbackId + ", technology=" + technology + ", status=" + status + ", result=" + result
+		return "PanelFeedback [id=" + id + ", technology=" + technology + ", status=" + status + ", result=" + result
 				+ ", comment=" + comment + "]";
 	}
-
+	
 }

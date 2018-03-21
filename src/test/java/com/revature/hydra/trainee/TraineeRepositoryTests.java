@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.revature.beans.SimpleTrainee;
+import com.revature.beans.Trainee;
 import com.revature.beans.TrainingStatus;
 import com.revature.hydra.trainee.data.TraineeRepository;
 
@@ -23,7 +23,7 @@ public class TraineeRepositoryTests {
 	
 	@Test
 	public void TestfindOneByTraineeIdAndTrainingStatusNot() {
-		SimpleTrainee trainee = test.findOne(1);
+		Trainee trainee = test.findOne(1);
 		
 		trainee = test.findOneByTraineeIdAndTrainingStatusNot((Integer) trainee.getTraineeId(), TrainingStatus.DROPPED);
 		assertNotNull(trainee.getTraineeId());
@@ -31,43 +31,43 @@ public class TraineeRepositoryTests {
 	
 	@Test
 	public void TestfindAllByEmailLikeAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByEmailLikeAndTrainingStatusNot("howard.johnson@hotmail.com", TrainingStatus.DROPPED);
+		List<Trainee> trainee = test.findAllByEmailLikeAndTrainingStatusNot("howard.johnson@hotmail.com", TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByNameLikeAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByNameLikeAndTrainingStatusNot("Howard Johnson", TrainingStatus.DROPPED);
+		List<Trainee> trainee = test.findAllByNameLikeAndTrainingStatusNot("Howard Johnson", TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllBySkypeIdLikeAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllBySkypeIdLikeAndTrainingStatusNot("osher.y.cohen", TrainingStatus.DROPPED);
+		List<Trainee> trainee = test.findAllBySkypeIdLikeAndTrainingStatusNot("osher.y.cohen", TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByBatchIdAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.DROPPED);
+		List<Trainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByBatchIdAndTrainingStatus() {
-		List<SimpleTrainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.TRAINING);
+		List<Trainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.TRAINING);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByTrainingStatusNot(TrainingStatus.DROPPED);
+		List<Trainee> trainee = test.findAllByTrainingStatusNot(TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByBatchId() {
-		List<SimpleTrainee> trainee = test.findAllByBatchId(2003);
+		List<Trainee> trainee = test.findAllByBatchId(2003);
 		assertNotNull(trainee);
 	}
 }
