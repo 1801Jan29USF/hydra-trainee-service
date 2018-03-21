@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum QCStatus implements Serializable{
 	@JsonProperty("Superstar")
-	Superstar,
+	SUPERSTAR,
 	@JsonProperty("Good")
-	Good,
+	GOOD,
 	@JsonProperty("Average")
-	Average,
+	AVERAGE,
 	@JsonProperty("Poor")
-	Poor,
+	POOR,
 	@JsonProperty("Undefined")
-	Undefined
+	UNDEFINED
 }

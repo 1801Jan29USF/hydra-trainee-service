@@ -8,14 +8,16 @@ import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.beans.Trainee;
@@ -30,6 +32,7 @@ import com.revature.hydra.trainee.service.TraineeService;
 @RestController
 //@PreAuthorize("isAuthenticated()")
 @CrossOrigin
+@RequestMapping("trainees")
 public class TraineeController {
 
 	private static final Logger log = Logger.getLogger(TraineeController.class);
@@ -46,32 +49,44 @@ public class TraineeController {
 	 *
 	 *******************************************************
 	 */
-	@RequestMapping(value = "/all/trainee", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE) //possibly not used 2/8/18, 10:53am edt
+	
+	/**
+	 * get all trainees within a batch
+	 * @param batchId - id of the batch desired
+	 * @return list of trainees within that batch id
+	 */
+	@GetMapping("batch/{batchId}")
+	//@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE) //possibly not used 2/8/18, 10:53am edt
 	//@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 	//@PreAuthorize("hasAnyRole('VP', 'QC', 'TRAINER', 'STAGING', 'PANEL')")
-	public ResponseEntity<List<Trainee>> findAllByBatch(@RequestParam(required = true) Integer batch) {
-		log.info("Finding trainees for batch: " + batch);
-		List<Trainee> trainees = traineeService.findAllTraineesByBatch(batch);
+	public ResponseEntity<List<Trainee>> findAllByBatch(@PathVariable Integer batchId) {
+		log.info("Finding trainees for batch: " + batchId);
+		List<Trainee> trainees = traineeService.findAllTraineesByBatch(batchId);
 		return new ResponseEntity<>(trainees, HttpStatus.OK);
 	}
-
-	@RequestMapping(value = "/all/trainee/dropped", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	
+	/**
+	 * get all dropped trainees within a batch
+	 * @param batchId - id of the batch desired
+	 * @return list of dropped trainees within that batch id
+	 */
+	@GetMapping("batch/dropped/{batchId}")
+	//@RequestMapping(value = "/all/trainee/dropped", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 	//@PreAuthorize("hasAnyRole('VP', 'QC', 'TRAINER', 'STAGING', 'PANEL')")
-	public ResponseEntity<List<Trainee>> findAllDroppedByBatch(@RequestParam(required = true) Integer batch) {
-		log.info("Finding dropped trainees for batch: " + batch);
-		List<Trainee> trainees = traineeService.findAllDroppedTraineesByBatch(batch);
+	public ResponseEntity<List<Trainee>> findAllDroppedByBatch(@PathVariable Integer batchId) {
+		log.info("Finding dropped trainees for batch: " + batchId);
+		List<Trainee> trainees = traineeService.findAllDroppedTraineesByBatch(batchId);
 		return new ResponseEntity<>(trainees, HttpStatus.OK);
 	}
 
 	/**
-	 * Create trainee
-	 *
-	 * @param trainee
-	 *            the trainee
-	 * @return the response entity
+	 * create a trainee
+	 * @param trainee - the trainee to be created
+	 * @return the created trainee
 	 */
-	@RequestMapping(value = "/all/trainee/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping
+	//@RequestMapping(value = "/all/trainee/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	//@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 	//@PreAuthorize("hasAnyRole('VP', 'QC', 'TRAINER', 'PANEL')")
 	public ResponseEntity<Trainee> createTrainee(@Valid @RequestBody Trainee trainee) {
@@ -81,13 +96,12 @@ public class TraineeController {
 	}
 
 	/**
-	 * Update trainee
-	 *
-	 * @param trainee
-	 *            the trainee
-	 * @return the response entity
+	 * update a given trainee
+	 * @param trainee - the trainee to be updated
+	 * @return a response entity signifying a successful update
 	 */
-	@RequestMapping(value = "/all/trainee/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping
+	//@RequestMapping(value = "/all/trainee/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	//@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 	//@PreAuthorize("hasAnyRole('VP', 'QC', 'TRAINER','PANEL')")
 	public ResponseEntity<Void> updateTrainee(@Valid @RequestBody Trainee trainee) {
@@ -97,23 +111,22 @@ public class TraineeController {
 	}
 
 	/**
-	 * Delete trainee
+	 * delete a given trainee
 	 *
-	 * @param id
-	 *            the id
-	 * @return the response entity
+	 * @param traineeId - the id of the trainee to delete
+	 * @return a response entity signifying a successful deletion
 	 */
-	@RequestMapping(value = "/all/trainee/delete/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping("/{traineeId}")
+	//@RequestMapping(value = "/all/trainee/delete/{id}", method = RequestMethod.DELETE)
 	//@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 	//@PreAuthorize("hasAnyRole('VP', 'QC', 'TRAINER','PANEL')")
-	public ResponseEntity<Void> deleteTrainee(@PathVariable int id) {
+	public ResponseEntity<Void> deleteTrainee(@PathVariable Integer traineeId) {
 		Trainee trainee = new Trainee();
-		trainee.setTraineeId(id);
-		log.info("Deleting trainee: " + id);
+		trainee.setTraineeId(traineeId);
+		log.info("Deleting trainee: " + traineeId);
 		traineeService.delete(trainee);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-
 	
 	@RequestMapping(value = "/all/trainee/search/{searchTerm}", method = RequestMethod.GET)
 	//@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)

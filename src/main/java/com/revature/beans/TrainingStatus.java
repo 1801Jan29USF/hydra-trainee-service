@@ -6,17 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum TrainingStatus implements Serializable{
 	@JsonProperty("Signed")
-	Signed,
+	SIGNED,
 	@JsonProperty("Selected")
-	Selected,
+	SELECTED,
 	@JsonProperty("Training")
-	Training,
+	TRAINING,
 	@JsonProperty("Marketing")
-	Marketing,
+	MARKETING,
 	@JsonProperty("Confirmed")
-	Confirmed,
+	CONFIRMED,
 	@JsonProperty("Employed")
-	Employed,
+	EMPLOYED,
 	@JsonProperty("Dropped")
-	Dropped
+	DROPPED
 }

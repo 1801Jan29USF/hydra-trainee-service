@@ -43,7 +43,7 @@ public class Trainee implements Serializable {
 		this.name = name;
 		this.resourceId = resourceId;
 		this.email = email;
-		this.trainingStatus = TrainingStatus.Training;
+		this.trainingStatus = TrainingStatus.TRAINING;
 		this.batch = batch;
 	}
 

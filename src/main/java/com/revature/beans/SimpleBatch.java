@@ -31,7 +31,7 @@ public class SimpleBatch implements Serializable {
 		this.gradedWeeks = 7;
 		this.goodGradeThreshold = 80;
 		this.borderlineGradeThreshold = 70;
-		this.trainingType = TrainingType.Revature;
+		this.trainingType = TrainingType.REVATURE;
 	}
 
 	/**

@@ -25,43 +25,43 @@ public class TraineeRepositoryTests {
 	public void TestfindOneByTraineeIdAndTrainingStatusNot() {
 		SimpleTrainee trainee = test.findOne(1);
 		
-		trainee = test.findOneByTraineeIdAndTrainingStatusNot((Integer) trainee.getTraineeId(), TrainingStatus.Dropped);
+		trainee = test.findOneByTraineeIdAndTrainingStatusNot((Integer) trainee.getTraineeId(), TrainingStatus.DROPPED);
 		assertNotNull(trainee.getTraineeId());
 	}
 	
 	@Test
 	public void TestfindAllByEmailLikeAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByEmailLikeAndTrainingStatusNot("howard.johnson@hotmail.com", TrainingStatus.Dropped);
+		List<SimpleTrainee> trainee = test.findAllByEmailLikeAndTrainingStatusNot("howard.johnson@hotmail.com", TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByNameLikeAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByNameLikeAndTrainingStatusNot("Howard Johnson", TrainingStatus.Dropped);
+		List<SimpleTrainee> trainee = test.findAllByNameLikeAndTrainingStatusNot("Howard Johnson", TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllBySkypeIdLikeAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllBySkypeIdLikeAndTrainingStatusNot("osher.y.cohen", TrainingStatus.Dropped);
+		List<SimpleTrainee> trainee = test.findAllBySkypeIdLikeAndTrainingStatusNot("osher.y.cohen", TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByBatchIdAndTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.Dropped);
+		List<SimpleTrainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByBatchIdAndTrainingStatus() {
-		List<SimpleTrainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.Training);
+		List<SimpleTrainee> trainee = test.findAllByBatchIdAndTrainingStatusNot(2003, TrainingStatus.TRAINING);
 		assertNotNull(trainee);
 	}
 	
 	@Test
 	public void TestfindAllByTrainingStatusNot() {
-		List<SimpleTrainee> trainee = test.findAllByTrainingStatusNot(TrainingStatus.Dropped);
+		List<SimpleTrainee> trainee = test.findAllByTrainingStatusNot(TrainingStatus.DROPPED);
 		assertNotNull(trainee);
 	}
 	

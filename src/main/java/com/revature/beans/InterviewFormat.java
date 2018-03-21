@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public enum InterviewFormat implements Serializable{
 
 	@JsonProperty("Skype")
-	Skype,
+	SKYPE,
 	@JsonProperty("Phone")
-	Phone
+	PHONE
 	
 }

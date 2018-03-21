@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public enum PanelStatus implements Serializable{
 		@JsonProperty("Pass")
-		Pass,
+		PASS,
 		@JsonProperty("Repanel")
-		Repanel
+		REPANEL
 }

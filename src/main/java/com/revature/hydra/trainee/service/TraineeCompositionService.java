@@ -86,7 +86,7 @@ public class TraineeCompositionService {
 	 * @return List<Trainee> - List of complex Trainees
 	 */
 	public List<Trainee> findAllNotDropped() {
-		List<SimpleTrainee> basis = traineeRepository.findAllByTrainingStatusNot(TrainingStatus.Dropped);
+		List<SimpleTrainee> basis = traineeRepository.findAllByTrainingStatusNot(TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
@@ -101,7 +101,7 @@ public class TraineeCompositionService {
 	 */
 	public List<Trainee> findAllByBatch(Integer batchId) {
 		List<SimpleTrainee> basis = traineeRepository.findAllByBatchIdAndTrainingStatusNot(batchId,
-				TrainingStatus.Dropped);
+				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
@@ -116,7 +116,7 @@ public class TraineeCompositionService {
 	 */
 	public List<Trainee> findAllDroppedByBatch(Integer batchId) {
 		List<SimpleTrainee> basis = traineeRepository.findAllByBatchIdAndTrainingStatus(batchId,
-				TrainingStatus.Dropped);
+				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
@@ -138,7 +138,7 @@ public class TraineeCompositionService {
 
 		for (SimpleBatch b : trainerBatches) {
 			List<SimpleTrainee> batchTrainees = traineeRepository.findAllByBatchIdAndTrainingStatusNot(b.getBatchId(),
-					TrainingStatus.Dropped);
+					TrainingStatus.DROPPED);
 			basis.addAll(batchTrainees);
 		}
 
@@ -156,7 +156,7 @@ public class TraineeCompositionService {
 	 */
 	public Trainee findOne(Integer traineeId) {
 		SimpleTrainee basis = traineeRepository.findOneByTraineeIdAndTrainingStatusNot(traineeId,
-				TrainingStatus.Dropped);
+				TrainingStatus.DROPPED);
 		Trainee result = composeTrainee(basis);
 
 		return result;
@@ -171,7 +171,7 @@ public class TraineeCompositionService {
 	 */
 	public List<Trainee> findByEmail(String email) {
 		List<SimpleTrainee> basis = traineeRepository.findAllByEmailLikeAndTrainingStatusNot(email,
-				TrainingStatus.Dropped);
+				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
@@ -185,7 +185,7 @@ public class TraineeCompositionService {
 	 */
 	public List<Trainee> findByName(String name) {
 		List<SimpleTrainee> basis = traineeRepository.findAllByNameLikeAndTrainingStatusNot(name,
-				TrainingStatus.Dropped);
+				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
@@ -200,7 +200,7 @@ public class TraineeCompositionService {
 	 */
 	public List<Trainee> findBySkypeId(String skypeId) {
 		List<SimpleTrainee> basis = traineeRepository.findAllBySkypeIdLikeAndTrainingStatusNot(skypeId,
-				TrainingStatus.Dropped);
+				TrainingStatus.DROPPED);
 		List<Trainee> trainees = composeListOfTrainees(basis);
 
 		return trainees;
