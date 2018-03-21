@@ -1,6 +1,5 @@
 package com.revature.hydra.trainee;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
@@ -12,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.revature.beans.SimpleTrainee;
-import com.revature.beans.Trainee;
-import com.revature.beans.Trainer;
 import com.revature.beans.TrainingStatus;
 import com.revature.hydra.trainee.data.TraineeRepository;
 

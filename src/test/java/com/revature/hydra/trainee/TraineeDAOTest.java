@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,16 +15,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.revature.beans.SimpleTrainee;
-import com.revature.beans.TrainerRole;
 import com.revature.hydra.trainee.data.TraineeRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class TraineeDAOTest {
 	private static final Logger log = Logger.getLogger(TraineeDAOTest.class);
-
-	private int traineeId = 1;
-	private String email = "patrick.walsh@revature.com";
 
 	@Autowired
 	TraineeRepository dao;

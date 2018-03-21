@@ -58,6 +58,7 @@ public class TraineeCompositionMessagingService {
 	 * @param Integer - Trainee's Trainer Id
 	 * @return A List of SimpleBatch object
 	*/
+	@SuppressWarnings("unchecked")
 	public List<SimpleBatch> sendListSimpleBatchRequest(Integer trainerId) {
 		JsonObject batchRequest = new JsonObject();
 		batchRequest.addProperty("methodName", "findAllByTrainerId");
